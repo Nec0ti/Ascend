@@ -1,0 +1,23 @@
+#ifndef BUILDING_H
+#define BUILDING_H
+
+#include <vector>
+#include "elevator.h"
+#include "request.h"
+
+class Building {
+public:
+    Building(int numFloors, int numElevators);
+
+    void addRequest(const Request& request);
+    void runSimulationStep();
+
+private:
+    bool assignElevator(const Request& request);
+
+    int numFloors;
+    std::vector<Elevator> elevators;
+    std::vector<Request> pendingRequests;
+};
+
+#endif

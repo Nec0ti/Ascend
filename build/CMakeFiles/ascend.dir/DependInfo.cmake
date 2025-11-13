@@ -1,0 +1,27 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  )
+
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/necoti/Desktop/Ascend/src/building.cpp" "CMakeFiles/ascend.dir/src/building.cpp.o" "gcc" "CMakeFiles/ascend.dir/src/building.cpp.o.d"
+  "/home/necoti/Desktop/Ascend/src/elevator.cpp" "CMakeFiles/ascend.dir/src/elevator.cpp.o" "gcc" "CMakeFiles/ascend.dir/src/elevator.cpp.o.d"
+  "/home/necoti/Desktop/Ascend/src/main.cpp" "CMakeFiles/ascend.dir/src/main.cpp.o" "gcc" "CMakeFiles/ascend.dir/src/main.cpp.o.d"
+  "/home/necoti/Desktop/Ascend/src/request.cpp" "CMakeFiles/ascend.dir/src/request.cpp.o" "gcc" "CMakeFiles/ascend.dir/src/request.cpp.o.d"
+  "" "ascend" "gcc" "CMakeFiles/ascend.dir/link.d"
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_FORWARD_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

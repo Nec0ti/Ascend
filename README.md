@@ -40,7 +40,7 @@ That makes it part simulator, part code generator.
 ## Roadmap
 
 **Phase 1 — Basic Simulation**  
-- [ ] Floors, elevators, and event sequence  
+- [x] Floors, elevators, and event sequence  
 - [ ] Simple optimization (nearest elevator selection)
 
 **Phase 2 — FSM Integration**  

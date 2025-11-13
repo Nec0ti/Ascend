@@ -1,0 +1,3 @@
+/home/necoti/Desktop/Ascend/build/CMakeFiles/ascend.dir
+/home/necoti/Desktop/Ascend/build/CMakeFiles/edit_cache.dir
+/home/necoti/Desktop/Ascend/build/CMakeFiles/rebuild_cache.dir
