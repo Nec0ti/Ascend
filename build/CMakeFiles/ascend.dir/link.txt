@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/ascend.dir/link.d CMakeFiles/ascend.dir/src/main.cpp.o CMakeFiles/ascend.dir/src/building.cpp.o CMakeFiles/ascend.dir/src/elevator.cpp.o CMakeFiles/ascend.dir/src/request.cpp.o -o ascend
