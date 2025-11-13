@@ -4,61 +4,64 @@
 
 Elevator::Elevator(int id, int numFloors)
     : id(id),
-      state(ElevatorState::IDLE),
       currentFloor(0),
       direction(Direction::NONE),
       numFloors(numFloors) {}
 
 void Elevator::update() {
-    if (state == ElevatorState::IDLE) {
-        return;
-    }
-
-    if (!targetFloors.empty()) {
-        int targetFloor = targetFloors.front();
-        if (currentFloor == targetFloor) {
-            std::cout << "Elevator " << id << " reached target floor " << targetFloor << std::endl;
-            targetFloors.erase(targetFloors.begin());
-
+    switch (fsm.getState()) {
+        case ElevatorFSMState::Idle:
+            // Do nothing
+            break;
+        case ElevatorFSMState::Moving:
             if (targetFloors.empty()) {
-                state = ElevatorState::IDLE;
+                fsm.handleEvent(ElevatorFSMEvent::AllTargetsReached);
                 direction = Direction::NONE;
-                std::cout << "Elevator " << id << " is now IDLE" << std::endl;
             } else {
-                // Set direction to next target
-                if (targetFloors.front() > currentFloor) {
-                    direction = Direction::UP;
-                    state = ElevatorState::MOVING_UP;
-                } else if (targetFloors.front() < currentFloor) {
-                    direction = Direction::DOWN;
-                    state = ElevatorState::MOVING_DOWN;
+                int targetFloor = targetFloors.front();
+                if (currentFloor == targetFloor) {
+                    fsm.handleEvent(ElevatorFSMEvent::FloorReached);
+                    targetFloors.erase(targetFloors.begin());
                 } else {
-                    // Target is the current floor, handle in next update
+                    if (targetFloors.front() > currentFloor) {
+                        direction = Direction::UP;
+                        currentFloor++;
+                    } else {
+                        direction = Direction::DOWN;
+                        currentFloor--;
+                    }
                 }
             }
-        } else if (state == ElevatorState::MOVING_UP) {
-            currentFloor++;
-        } else if (state == ElevatorState::MOVING_DOWN) {
-            currentFloor--;
-        }
-        std::cout << "Elevator " << id << " at floor " << currentFloor << " (State: " << static_cast<int>(state) << ")" << std::endl;
+            break;
+        case ElevatorFSMState::DoorOpen:
+            // In a real scenario, this would be a timed event
+            fsm.handleEvent(ElevatorFSMEvent::DoorClosed);
+            break;
     }
 }
 
 void Elevator::addTarget(int floor) {
-    targetFloors.push_back(floor);
+    if (std::find(targetFloors.begin(), targetFloors.end(), floor) != targetFloors.end()) {
+        return;
+    }
 
-    if (state == ElevatorState::IDLE) {
+    targetFloors.push_back(floor);
+    if (fsm.getState() == ElevatorFSMState::Idle) {
+        fsm.handleEvent(ElevatorFSMEvent::CallReceived);
         if (targetFloors.front() > currentFloor) {
-            state = ElevatorState::MOVING_UP;
             direction = Direction::UP;
-            std::cout << "Elevator " << id << " state changed to MOVING_UP" << std::endl;
         } else if (targetFloors.front() < currentFloor) {
-            state = ElevatorState::MOVING_DOWN;
             direction = Direction::DOWN;
-            std::cout << "Elevator " << id << " state changed to MOVING_DOWN" << std::endl;
         }
     }
+}
+
+bool Elevator::isTargetFloor(int floor) const {
+    return std::find(targetFloors.begin(), targetFloors.end(), floor) != targetFloors.end();
+}
+
+const std::vector<int>& Elevator::getTargetFloors() const {
+    return targetFloors;
 }
 
 int Elevator::getId() const {
@@ -69,8 +72,8 @@ int Elevator::getCurrentFloor() const {
     return currentFloor;
 }
 
-ElevatorState Elevator::getState() const {
-    return state;
+ElevatorFSMState Elevator::getState() const {
+    return fsm.getState();
 }
 
 Direction Elevator::getDirection() const {
@@ -78,13 +81,7 @@ Direction Elevator::getDirection() const {
 }
 
 std::string Elevator::stateToString() const {
-    switch (state) {
-        case ElevatorState::IDLE: return "IDLE";
-        case ElevatorState::MOVING_UP: return "MOVING_UP";
-        case ElevatorState::MOVING_DOWN: return "MOVING_DOWN";
-        case ElevatorState::DOOR_OPEN: return "DOOR_OPEN";
-    }
-    return "UNKNOWN";
+    return fsm.stateToString();
 }
 
 std::string Elevator::directionToString() const {

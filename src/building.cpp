@@ -36,7 +36,7 @@ bool Building::assignElevator(const Request& request) {
     int minDistance = std::numeric_limits<int>::max();
 
     for (auto& elevator : elevators) {
-        if (elevator.getState() == ElevatorState::IDLE) {
+        if (elevator.getState() == ElevatorFSMState::Idle) {
             int distance = std::abs(elevator.getCurrentFloor() - request.getFromFloor());
             if (distance < minDistance) {
                 minDistance = distance;

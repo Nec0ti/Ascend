@@ -10,7 +10,11 @@ add_executable(ascend
     src/building.cpp
     src/elevator.cpp
     src/request.cpp
+    src/ElevatorFSM.cpp
 )
 
 # Include the src directory for headers
 target_include_directories(ascend PUBLIC src)
+
+# Add the FSM generator executable
+add_executable(fsm_generator fsm_generator/main.cpp)

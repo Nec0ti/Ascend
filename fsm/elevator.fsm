@@ -1,11 +1,11 @@
 FSM ElevatorFSM
 
 STATE Idle
-    ON CallReceived GOTO Moving DO StartMoving
+    ON CallReceived GOTO Moving
 
 STATE Moving
-    ON FloorReached GOTO DoorOpen DO OpenDoor
-    ON TargetReached GOTO Idle DO StopMoving
+    ON FloorReached GOTO DoorOpen
+    ON AllTargetsReached GOTO Idle
 
 STATE DoorOpen
-    ON DoorClosed GOTO Idle DO CloseDoor
+    ON DoorClosed GOTO Moving

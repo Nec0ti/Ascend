@@ -44,9 +44,9 @@ That makes it part simulator, part code generator.
 - [x] Simple optimization (nearest elevator selection)
 
 **Phase 2 — FSM Integration**  
-- [ ] Define elevator behavior through FSM files  
-- [ ] Add FSM Generator module (`.fsm` → `.h/.cpp`)  
-- [ ] Log state transitions
+- [x] Define elevator behavior through FSM files  
+- [x] Add FSM Generator module (`.fsm` → `.h/.cpp`)  
+- [x] Log state transitions
 
 **Phase 3 — Advanced Features**  
 - [ ] Multiple elevator coordination  
