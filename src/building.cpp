@@ -57,3 +57,7 @@ bool Building::assignElevator(const Request& request) {
         return false;
     }
 }
+
+const std::vector<Elevator>& Building::getElevators() const {
+    return elevators;
+}

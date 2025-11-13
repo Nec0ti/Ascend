@@ -76,3 +76,22 @@ ElevatorState Elevator::getState() const {
 Direction Elevator::getDirection() const {
     return direction;
 }
+
+std::string Elevator::stateToString() const {
+    switch (state) {
+        case ElevatorState::IDLE: return "IDLE";
+        case ElevatorState::MOVING_UP: return "MOVING_UP";
+        case ElevatorState::MOVING_DOWN: return "MOVING_DOWN";
+        case ElevatorState::DOOR_OPEN: return "DOOR_OPEN";
+    }
+    return "UNKNOWN";
+}
+
+std::string Elevator::directionToString() const {
+    switch (direction) {
+        case Direction::UP: return "UP";
+        case Direction::DOWN: return "DOWN";
+        case Direction::NONE: return "NONE";
+    }
+    return "UNKNOWN";
+}

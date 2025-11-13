@@ -41,7 +41,7 @@ That makes it part simulator, part code generator.
 
 **Phase 1 — Basic Simulation**  
 - [x] Floors, elevators, and event sequence  
-- [ ] Simple optimization (nearest elevator selection)
+- [x] Simple optimization (nearest elevator selection)
 
 **Phase 2 — FSM Integration**  
 - [ ] Define elevator behavior through FSM files  

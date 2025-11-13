@@ -2,6 +2,7 @@
 #define ELEVATOR_H
 
 #include <vector>
+#include <string>
 
 enum class ElevatorState {
     IDLE,
@@ -27,6 +28,9 @@ public:
     int getCurrentFloor() const;
     ElevatorState getState() const;
     Direction getDirection() const;
+
+    std::string stateToString() const;
+    std::string directionToString() const;
 
 private:
     int id;

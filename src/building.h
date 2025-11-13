@@ -4,6 +4,7 @@
 #include <vector>
 #include "elevator.h"
 #include "request.h"
+#include <string>
 
 class Building {
 public:
@@ -11,6 +12,7 @@ public:
 
     void addRequest(const Request& request);
     void runSimulationStep();
+    const std::vector<Elevator>& getElevators() const;
 
 private:
     bool assignElevator(const Request& request);
