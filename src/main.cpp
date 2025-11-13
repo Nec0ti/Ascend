@@ -14,7 +14,7 @@ int main() {
     // Add some initial requests
     building.addRequest(Request(1, 8));
     building.addRequest(Request(5, 2));
-    building.addRequest(Request(3, 7)); // Added a new request to test
+    building.addRequest(Request(3, 7));
 
     // Run the simulation for a few steps
     for (int i = 0; i < 20; ++i) { // Increased steps for more observation
