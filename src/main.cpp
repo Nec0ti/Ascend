@@ -1,28 +1,40 @@
 #include "building.h"
 #include "request.h"
 #include "terminal_ui.h"
+#include "config.h"
+#include "web_server.h"
 #include <thread>
 #include <chrono>
+#include <iostream>
 
 int main() {
-    const int NUM_FLOORS = 10;
-    const int NUM_ELEVATORS = 3;
+    try {
+        Config config("config.json");
 
-    Building building(NUM_FLOORS, NUM_ELEVATORS);
-    TerminalUI ui(building);
+        Building building(config.getNumFloors(), config.getNumElevators());
+        TerminalUI ui(building);
+        WebServer webServer(building);
 
-    // Add some initial requests
-    building.addRequest(Request(1, 8));
-    building.addRequest(Request(5, 2));
-    building.addRequest(Request(3, 7));
-    building.addRequest(Request(9, 0));
+        std::thread webServerThread([&]() {
+            webServer.run();
+        });
 
+        for (const auto& req : config.getRequests()) {
+            building.addRequest(req);
+        }
 
-    // Main simulation loop
-    for (int i = 0; i < 100; ++i) {
-        building.runSimulationStep();
-        ui.draw();
-        std::this_thread::sleep_for(std::chrono::milliseconds(200));
+        // Main simulation loop
+        for (int i = 0; i < config.getSimulationSteps(); ++i) {
+            building.runSimulationStep();
+            ui.draw();
+            std::this_thread::sleep_for(std::chrono::milliseconds(config.getStepDelayMs()));
+        }
+
+        webServerThread.join(); // Wait for the web server thread to finish (though in this case it runs indefinitely)
+
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
     }
 
     return 0;

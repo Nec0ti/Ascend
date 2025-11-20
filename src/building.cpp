@@ -4,7 +4,7 @@
 #include <limits>
 #include <vector>
 
-Building::Building(int numFloors, int numElevators) : numFloors(numFloors) {
+Building::Building(int numFloors, int numElevators) : numFloors(numFloors), currentTime(0) {
     for (int i = 0; i < numElevators; ++i) {
         elevators.emplace_back(i, numFloors);
     }
@@ -15,6 +15,8 @@ void Building::addRequest(const Request& request) {
 }
 
 void Building::runSimulationStep() {
+    currentTime++;
+
     // 1. Assign pending requests
     std::vector<Request> unassignedRequests;
     for (const auto& req : pendingRequests) {
@@ -27,6 +29,17 @@ void Building::runSimulationStep() {
     // 2. Update all elevators
     for (auto& elevator : elevators) {
         elevator.update();
+    }
+
+    // 3. Adaptive logic: send idle elevators to ground floor during peak hours
+    // Peak hours are 8-9am and 5-6pm (480-540 and 1020-1080 minutes)
+    bool isPeakHour = (currentTime >= 480 && currentTime <= 540) || (currentTime >= 1020 && currentTime <= 1080);
+    if (isPeakHour) {
+        for (auto& elevator : elevators) {
+            if (elevator.getState() == ElevatorFSMState::Idle && elevator.getCurrentFloor() != 0) {
+                elevator.addTarget(0);
+            }
+        }
     }
 }
 
@@ -85,4 +98,8 @@ int Building::getNumFloors() const {
 
 const std::vector<Request>& Building::getPendingRequests() const {
     return pendingRequests;
+}
+
+int Building::getCurrentTime() const {
+    return currentTime;
 }

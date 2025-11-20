@@ -52,12 +52,26 @@ That makes it part simulator, part code generator.
 - [x] Multiple elevator coordination  
 - [x] Time-based (tick-driven) simulation  
 - [x] Event queue and asynchronous handling  
-- [ ] Terminal visualization (ASCII UI or ncurses)
+- [x] Terminal visualization (ASCII UI or ncurses)
 
 **Phase 4 — Extras (Experimental)**  
-- [ ] Adaptive/learning elevator logic  
-- [ ] Configurable parameters from JSON/INI  
-- [ ] Optional GUI or web interface  
+- [x] Adaptive/learning elevator logic  
+- [x] Configurable parameters from JSON/INI  
+- [x] Optional GUI or web interface  
+
+---
+
+## New Features in Phase 4
+
+Phase 4 introduces significant enhancements to the Ascend simulation, focusing on configurability, intelligence, and user interaction:
+
+*   **Configurable Parameters (JSON/INI)**: The simulation now reads its parameters (number of floors, elevators, simulation steps, etc.) from a `config.json` file. This allows for easy customization of simulation scenarios without recompiling the code.
+*   **Adaptive/Learning Elevator Logic**: The elevator system incorporates basic adaptive logic. During simulated "peak hours," idle elevators are intelligently repositioned to the ground floor to anticipate and efficiently handle increased traffic.
+*   **Optional GUI or Web Interface**: In addition to the terminal-based UI, a new web interface is available. This provides a graphical representation of the simulation state, accessible via a web browser, offering a more intuitive and remote monitoring experience.
+
+For more detailed information on how to use and develop Ascend, please refer to the following documentation:
+*   [Usage Guide](docs/USAGE.md)
+*   [Development Guide](docs/DEVELOPMENT.md)
 
 ---
 

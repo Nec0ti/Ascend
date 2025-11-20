@@ -12,10 +12,16 @@ add_executable(ascend
     src/request.cpp
     src/ElevatorFSM.cpp
     src/terminal_ui.cpp
+    src/config.cpp
+    src/web_server.cpp
 )
 
 # Include the src directory for headers
-target_include_directories(ascend PUBLIC src)
+target_include_directories(ascend PUBLIC 
+    src
+    libs/json/include
+    libs/httplib
+)
 
 # Find and link ncurses
 find_package(Curses REQUIRED)

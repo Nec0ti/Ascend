@@ -15,6 +15,7 @@ public:
     const std::vector<Elevator>& getElevators() const;
     int getNumFloors() const;
     const std::vector<Request>& getPendingRequests() const;
+    int getCurrentTime() const;
 
 private:
     bool assignElevator(const Request& request);
@@ -22,6 +23,7 @@ private:
     int numFloors;
     std::vector<Elevator> elevators;
     std::vector<Request> pendingRequests;
+    int currentTime;
 };
 
 #endif
