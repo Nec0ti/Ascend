@@ -6,7 +6,9 @@ Elevator::Elevator(int id, int numFloors)
     : id(id),
       currentFloor(0),
       direction(Direction::NONE),
-      numFloors(numFloors) {}
+      numFloors(numFloors),
+      totalDistance(0),        // Initialize statistics
+      passengersServed(0) {}    // Initialize statistics
 
 void Elevator::update() {
     switch (fsm.getState()) {
@@ -22,7 +24,9 @@ void Elevator::update() {
                 if (currentFloor == targetFloor) {
                     fsm.handleEvent(ElevatorFSMEvent::FloorReached);
                     targetFloors.erase(targetFloors.begin());
+                    passengersServed++; // Increment passengers served when a floor is reached
                 } else {
+                    int prevFloor = currentFloor;
                     if (targetFloors.front() > currentFloor) {
                         direction = Direction::UP;
                         currentFloor++;
@@ -30,6 +34,7 @@ void Elevator::update() {
                         direction = Direction::DOWN;
                         currentFloor--;
                     }
+                    totalDistance += std::abs(currentFloor - prevFloor); // Update total distance
                 }
             }
             break;
@@ -48,12 +53,7 @@ void Elevator::addTarget(int floor) {
 
     targetFloors.push_back(floor);
 
-    if (direction == Direction::UP) {
-        std::sort(targetFloors.begin(), targetFloors.end());
-    } else if (direction == Direction::DOWN) {
-        std::sort(targetFloors.begin(), targetFloors.end(), std::greater<int>());
-    }
-
+    // If idle, determine direction and sort
     if (fsm.getState() == ElevatorFSMState::Idle) {
         fsm.handleEvent(ElevatorFSMEvent::CallReceived);
         if (!targetFloors.empty()) {
@@ -64,6 +64,13 @@ void Elevator::addTarget(int floor) {
                 direction = Direction::DOWN;
                 std::sort(targetFloors.begin(), targetFloors.end(), std::greater<int>());
             }
+        }
+    } else {
+        // If moving, try to insert in a way that picks up on the way
+        if (direction == Direction::UP) {
+            std::sort(targetFloors.begin(), targetFloors.end());
+        } else if (direction == Direction::DOWN) {
+            std::sort(targetFloors.begin(), targetFloors.end(), std::greater<int>());
         }
     }
 }
@@ -103,4 +110,12 @@ std::string Elevator::directionToString() const {
         case Direction::NONE: return "NONE";
     }
     return "UNKNOWN";
+}
+
+int Elevator::getTotalDistance() const {
+    return totalDistance;
+}
+
+int Elevator::getPassengersServed() const {
+    return passengersServed;
 }

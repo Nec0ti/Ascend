@@ -20,6 +20,7 @@ private:
     WINDOW* buildingWindow;
     WINDOW* elevatorWindow;
     WINDOW* requestWindow;
+    WINDOW* statusWindow;
 };
 
 #endif

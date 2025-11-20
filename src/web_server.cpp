@@ -1,51 +1,47 @@
 #include "web_server.h"
 #include <iostream>
 
-WebServer::WebServer(Building& building, int port) : building(building), port(port) {
+WebServer::WebServer(Building& building, SimulationController& controller, int port)
+    : building(building), controller(controller), port(port) {
+    // Serve static files from the "web" directory
+    svr.set_base_dir("./web");
+
+    svr.Get("/", [&](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*"); // Allow CORS for web client
+        res.set_content_type("text/html");
+        res.send_file("./web/index.html");
+    });
+
+    svr.Get("/style.css", [&](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*"); // Allow CORS for web client
+        res.set_content_type("text/css");
+        res.send_file("./web/style.css");
+    });
+
+    svr.Get("/script.js", [&](const httplib::Request& req, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*"); // Allow CORS for web client
+        res.set_content_type("application/javascript");
+        res.send_file("./web/script.js");
+    });
+
     svr.Get("/state", [&](const httplib::Request& req, httplib::Response& res) {
         res.set_header("Access-Control-Allow-Origin", "*"); // Allow CORS for web client
         res.set_content(getSimulationState().dump(), "application/json");
     });
 
-    svr.Get("/", [&](const httplib::Request& req, httplib::Response& res) {
-        res.set_content("<!DOCTYPE html>\n"
-                        "<html>\n"
-                        "<head>\n"
-                        "    <title>Elevator Simulation</title>\n"
-                        "    <style>\n"
-                        "        body { font-family: monospace; }\n"
-                        "        .floor { border: 1px solid black; padding: 5px; margin: 2px; }\n"
-                        "        .elevator { background-color: gray; color: white; padding: 3px; margin: 1px; display: inline-block; }\n"
-                        "    </style>\n"
-                        "</head>\n"
-                        "<body>\n"
-                        "    <h1>Elevator Simulation</h1>\n"
-                        "    <div id=\"simulation-state\">Loading...</div>\n"
-                        "\n"
-                        "    <script>\n"
-                        "        async function fetchState() {\n"
-                        "            const response = await fetch('/state');\n"
-                        "            const state = await response.json();\n"
-                        "            \n"
-                        "            let html = `<h2>Time: ${state.time}</h2>`;\n"
-                        "            html += `<h3>Floors: ${state.num_floors}</h3>`;\n"
-                        "            html += `<h3>Elevators:</h3>`;\n"
-                        "            state.elevators.forEach(e => {\n"
-                        "                html += `<div class=\"elevator\">Elevator ${e.id}: Floor ${e.current_floor}, State: ${e.state}, Dir: ${e.direction}</div>`;\n"
-                        "            });\n"
-                        "            html += `<h3>Pending Requests:</h3>`;\n"
-                        "            state.pending_requests.forEach(r => {\n"
-                        "                html += `<div>From ${r.from} to ${r.to}</div>`;\n"
-                        "            });\n"
-                        "\n"
-                        "            document.getElementById('simulation-state').innerHTML = html;\n"
-                        "        }\n"
-                        "\n"
-                        "        setInterval(fetchState, 500);\n"
-                        "        fetchState();\n"
-                        "    </script>\n"
-                        "</body>\n"
-                        "</html>", "text/html");
+    svr.Post("/start", [&](const httplib::Request& req, httplib::Response& res) {
+        controller.start();
+        res.set_content("Simulation started", "text/plain");
+    });
+
+    svr.Post("/stop", [&](const httplib::Request& req, httplib::Response& res) {
+        controller.stop();
+        res.set_content("Simulation stopped", "text/plain");
+    });
+
+    svr.Post("/reset", [&](const httplib::Request& req, httplib::Response& res) {
+        controller.reset();
+        res.set_content("Simulation reset", "text/plain");
     });
 }
 

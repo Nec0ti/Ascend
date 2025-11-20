@@ -1,0 +1,26 @@
+name: Deploy Web UI to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Deploy when changes are pushed to the main branch
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js (for npm if needed, though not strictly for static files)
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web # The directory containing your static web assets
+          # cname: example.com # Uncomment and set if you have a custom domain

@@ -2,12 +2,18 @@
 #include <iostream>
 #include <cmath>
 #include <limits>
-#include <vector>
+#include <random>
+#include <algorithm> // For std::shuffle
 
-Building::Building(int numFloors, int numElevators) : numFloors(numFloors), currentTime(0) {
+Building::Building(int numFloors, int numElevators, const Config& config)
+    : numFloors(numFloors),
+      currentTime(0),
+      config(config),
+      rng(std::random_device{}()) { // Initialize random number generator
     for (int i = 0; i < numElevators; ++i) {
         elevators.emplace_back(i, numFloors);
     }
+    nextRequestTime = config.getRequestGenerationIntervalMin(); // Initial request generation time
 }
 
 void Building::addRequest(const Request& request) {
@@ -16,6 +22,27 @@ void Building::addRequest(const Request& request) {
 
 void Building::runSimulationStep() {
     currentTime++;
+
+    // Generate random requests
+    if (currentTime >= nextRequestTime) {
+        generateRandomRequest();
+        int interval = std::uniform_int_distribution<>(
+            config.getRequestGenerationIntervalMin(),
+            config.getRequestGenerationIntervalMax())(rng);
+        
+        // Apply peak hour multiplier
+        bool isPeakHour = false;
+        for (size_t i = 0; i < config.getPeakHoursStart().size(); ++i) {
+            if (currentTime >= config.getPeakHoursStart()[i] && currentTime <= config.getPeakHoursEnd()[i]) {
+                isPeakHour = true;
+                break;
+            }
+        }
+        if (isPeakHour) {
+            interval /= config.getPeakRequestMultiplier();
+        }
+        nextRequestTime = currentTime + std::max(1, interval); // Ensure interval is at least 1
+    }
 
     // 1. Assign pending requests
     std::vector<Request> unassignedRequests;
@@ -32,8 +59,14 @@ void Building::runSimulationStep() {
     }
 
     // 3. Adaptive logic: send idle elevators to ground floor during peak hours
-    // Peak hours are 8-9am and 5-6pm (480-540 and 1020-1080 minutes)
-    bool isPeakHour = (currentTime >= 480 && currentTime <= 540) || (currentTime >= 1020 && currentTime <= 1080);
+    bool isPeakHour = false;
+    for (size_t i = 0; i < config.getPeakHoursStart().size(); ++i) {
+        if (currentTime >= config.getPeakHoursStart()[i] && currentTime <= config.getPeakHoursEnd()[i]) {
+            isPeakHour = true;
+            break;
+        }
+    }
+
     if (isPeakHour) {
         for (auto& elevator : elevators) {
             if (elevator.getState() == ElevatorFSMState::Idle && elevator.getCurrentFloor() != 0) {
@@ -43,6 +76,19 @@ void Building::runSimulationStep() {
     }
 }
 
+void Building::generateRandomRequest() {
+    std::uniform_int_distribution<> floor_dist(0, numFloors - 1);
+    int fromFloor = floor_dist(rng);
+    int toFloor = floor_dist(rng);
+
+    // Ensure fromFloor and toFloor are different
+    while (toFloor == fromFloor) {
+        toFloor = floor_dist(rng);
+    }
+
+    addRequest(Request(fromFloor, toFloor));
+    std::cout << "Generated new request: " << fromFloor << " -> " << toFloor << " at time " << currentTime << std::endl;
+}
 
 bool Building::assignElevator(const Request& request) {
     Elevator* bestElevator = nullptr;
@@ -86,7 +132,6 @@ bool Building::assignElevator(const Request& request) {
         return false;
     }
 }
-
 
 const std::vector<Elevator>& Building::getElevators() const {
     return elevators;

@@ -3,7 +3,12 @@
         "num_floors": 10,
         "num_elevators": 3,
         "simulation_steps": 100,
-        "step_delay_ms": 200
+        "step_delay_ms": 200,
+        "request_generation_interval_min": 5,
+        "request_generation_interval_max": 15,
+        "peak_hours_start": [480, 1020],
+        "peak_hours_end": [540, 1080],
+        "peak_request_multiplier": 2
     },
     "requests": [
         { "from": 1, "to": 8 },

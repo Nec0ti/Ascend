@@ -53,24 +53,74 @@ public:
 
     
 
-    std::string directionToString() const;
+        std::string directionToString() const;
 
+    
 
+    
 
-private:
+    
 
-    int id;
+        // Statistics
 
-    ElevatorFSM fsm;
+    
 
-    int currentFloor;
+        int getTotalDistance() const;
 
-    std::vector<int> targetFloors;
+    
 
-    Direction direction;
+        int getPassengersServed() const;
 
-    int numFloors;
+    
 
-};
+    
+
+    
+
+    private:
+
+    
+
+        int id;
+
+    
+
+        ElevatorFSM fsm;
+
+    
+
+        int currentFloor;
+
+    
+
+        std::vector<int> targetFloors;
+
+    
+
+        Direction direction;
+
+    
+
+        int numFloors;
+
+    
+
+    
+
+    
+
+        // Statistics
+
+    
+
+        int totalDistance;
+
+    
+
+        int passengersServed;
+
+    
+
+    };
 
 #endif
