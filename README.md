@@ -49,9 +49,9 @@ That makes it part simulator, part code generator.
 - [x] Log state transitions
 
 **Phase 3 — Advanced Features**  
-- [ ] Multiple elevator coordination  
-- [ ] Time-based (tick-driven) simulation  
-- [ ] Event queue and asynchronous handling  
+- [x] Multiple elevator coordination  
+- [x] Time-based (tick-driven) simulation  
+- [x] Event queue and asynchronous handling  
 - [ ] Terminal visualization (ASCII UI or ncurses)
 
 **Phase 4 — Extras (Experimental)**  
