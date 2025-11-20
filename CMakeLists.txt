@@ -11,10 +11,15 @@ add_executable(ascend
     src/elevator.cpp
     src/request.cpp
     src/ElevatorFSM.cpp
+    src/terminal_ui.cpp
 )
 
 # Include the src directory for headers
 target_include_directories(ascend PUBLIC src)
+
+# Find and link ncurses
+find_package(Curses REQUIRED)
+target_link_libraries(ascend PRIVATE ${CURSES_LIBRARIES})
 
 # Add the FSM generator executable
 add_executable(fsm_generator fsm_generator/main.cpp)

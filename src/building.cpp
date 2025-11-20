@@ -30,18 +30,34 @@ void Building::runSimulationStep() {
     }
 }
 
+
 bool Building::assignElevator(const Request& request) {
-    // Simple optimization: find the nearest idle elevator.
     Elevator* bestElevator = nullptr;
-    int minDistance = std::numeric_limits<int>::max();
+    int bestScore = -1; // Using -1 to indicate no suitable elevator found yet
 
     for (auto& elevator : elevators) {
+        int score = 0;
+        int distance = std::abs(elevator.getCurrentFloor() - request.getFromFloor());
+
         if (elevator.getState() == ElevatorFSMState::Idle) {
-            int distance = std::abs(elevator.getCurrentFloor() - request.getFromFloor());
-            if (distance < minDistance) {
-                minDistance = distance;
-                bestElevator = &elevator;
+            // Higher score for idle elevators, with a penalty for distance
+            score = 100 - distance;
+        } else if (elevator.getState() == ElevatorFSMState::Moving) {
+            Direction requestDirection = (request.getToFloor() > request.getFromFloor()) ? Direction::UP : Direction::DOWN;
+            
+            // Check if the elevator is moving towards the request's origin floor
+            bool isMovingTowards = (elevator.getDirection() == Direction::UP && request.getFromFloor() > elevator.getCurrentFloor()) ||
+                                   (elevator.getDirection() == Direction::DOWN && request.getFromFloor() < elevator.getCurrentFloor());
+
+            if (isMovingTowards && elevator.getDirection() == requestDirection) {
+                // Elevator is moving towards the request and in the same direction
+                score = 50 - distance;
             }
+        }
+
+        if (score > bestScore) {
+            bestScore = score;
+            bestElevator = &elevator;
         }
     }
 
@@ -52,12 +68,21 @@ bool Building::assignElevator(const Request& request) {
         bestElevator->addTarget(request.getToFloor());
         return true;
     } else {
-        std::cout << "No idle elevators available for request (" << request.getFromFloor() << " -> "
+        std::cout << "No suitable elevators available for request (" << request.getFromFloor() << " -> "
                   << request.getToFloor() << "). Request queued." << std::endl;
         return false;
     }
 }
 
+
 const std::vector<Elevator>& Building::getElevators() const {
     return elevators;
+}
+
+int Building::getNumFloors() const {
+    return numFloors;
+}
+
+const std::vector<Request>& Building::getPendingRequests() const {
+    return pendingRequests;
 }

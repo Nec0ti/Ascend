@@ -41,17 +41,29 @@ void Elevator::update() {
 }
 
 void Elevator::addTarget(int floor) {
+    // Avoid adding duplicate targets
     if (std::find(targetFloors.begin(), targetFloors.end(), floor) != targetFloors.end()) {
         return;
     }
 
     targetFloors.push_back(floor);
+
+    if (direction == Direction::UP) {
+        std::sort(targetFloors.begin(), targetFloors.end());
+    } else if (direction == Direction::DOWN) {
+        std::sort(targetFloors.begin(), targetFloors.end(), std::greater<int>());
+    }
+
     if (fsm.getState() == ElevatorFSMState::Idle) {
         fsm.handleEvent(ElevatorFSMEvent::CallReceived);
-        if (targetFloors.front() > currentFloor) {
-            direction = Direction::UP;
-        } else if (targetFloors.front() < currentFloor) {
-            direction = Direction::DOWN;
+        if (!targetFloors.empty()) {
+            if (targetFloors.front() > currentFloor) {
+                direction = Direction::UP;
+                std::sort(targetFloors.begin(), targetFloors.end());
+            } else if (targetFloors.front() < currentFloor) {
+                direction = Direction::DOWN;
+                std::sort(targetFloors.begin(), targetFloors.end(), std::greater<int>());
+            }
         }
     }
 }

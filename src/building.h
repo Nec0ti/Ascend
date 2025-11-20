@@ -13,6 +13,8 @@ public:
     void addRequest(const Request& request);
     void runSimulationStep();
     const std::vector<Elevator>& getElevators() const;
+    int getNumFloors() const;
+    const std::vector<Request>& getPendingRequests() const;
 
 private:
     bool assignElevator(const Request& request);
